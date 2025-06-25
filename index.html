@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tasks - Stay Productive!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* Theme Variables */
+        body.theme-green {
+            background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+        }
+
+        body.theme-orange {
+            background: linear-gradient(135deg, #ff9a56 0%, #ffb07a 100%);
+        }
+
+        body.theme-yellow {
+            background: linear-gradient(135deg, #ffd93d 0%, #ffe066 100%);
+        }
+
+        body.theme-blue {
+            background: linear-gradient(135deg, #74b9ff 0%, #a8d5ff 100%);
+        }
+
+        .app-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+            border-radius: 20px 20px 0 0;
+            transition: background 0.3s ease;
+        }
+
+        /* Theme Color Variables */
+        :root {
+            --primary-color: #58cc02;
+            --secondary-color: #89e219;
+            --accent-color: #ffc800;
+            --success-color: #58cc02;
+        }
+
+        .theme-green {
+            --primary-color: #58cc02;
+            --secondary-color: #89e219;
+            --accent-color: #ffc800;
+            --success-color: #58cc02;
+        }
+
+        .theme-orange {
+            --primary-color: #ff9a56;
+            --secondary-color: #ffb07a;
+            --accent-color: #ff6b35;
+            --success-color: #ff9a56;
+        }
+
+        .theme-yellow {
+            --primary-color: #ffd93d;
+            --secondary-color: #ffe066;
+            --accent-color: #ffb300;
+            --success-color: #ffd93d;
+        }
+
+        .theme-blue {
+            --primary-color: #74b9ff;
+            --secondary-color: #a8d5ff;
+            --accent-color: #0984e3;
+            --success-color: #74b9ff;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .app-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2b2b2b;
+            margin-bottom: 10px;
+        }
+
+        .app-subtitle {
+            font-size: 1.1rem;
+            color: #777;
+            font-weight: 400;
+        }
+
+        .task-setup {
+            display: block;
+        }
+
+        .task-setup.hidden {
+            display: none;
+        }
+
+        .task-input-group {
+            margin-bottom: 25px;
+        }
+
+        .task-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid #e5e5e5;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            background: #f9f9f9;
+        }
+
+        .task-input:focus {
+            outline: none;
+            border-color: #58cc02;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(88, 204, 2, 0.1);
+        }
+
+        .task-input::placeholder {
+            color: #aaa;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #58cc02 0%, #89e219 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(88, 204, 2, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(88, 204, 2, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .task-list {
+            display: none;
+        }
+
+        .task-list.visible {
+            display: block;
+            animation: slideInUp 0.6s ease;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 4px solid #58cc02;
+            transition: all 0.3s ease;
+        }
+
+        .task-item.completed {
+            background: #e8f5e8;
+            opacity: 0.7;
+            transform: scale(0.98);
+        }
+
+        .task-text {
+            flex: 1;
+            text-align: left;
+            font-size: 1.1rem;
+            color: #2b2b2b;
+            font-weight: 500;
+        }
+
+        .task-text.completed {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .done-btn {
+            background: #58cc02;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .done-btn:hover {
+            background: #4caf02;
+            transform: scale(1.05);
+        }
+
+        .done-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .notification {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: #58cc02;
+            color: white;
+            padding: 25px 40px;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            box-shadow: 0 15px 30px rgba(88, 204, 2, 0.4);
+            z-index: 1000;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .notification.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .final-celebration {
+            display: none;
+            text-align: center;
+            animation: bounceIn 0.8s ease;
+        }
+
+        .final-celebration.visible {
+            display: block;
+        }
+
+        .celebration-text {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #58cc02;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .celebration-subtext {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e5e5;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #58cc02, #89e219);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            70% {
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+
+            .app-title {
+                font-size: 1.8rem;
+            }
+
+            .app-subtitle {
+                font-size: 1rem;
+            }
+
+            .task-input {
+                padding: 14px 18px;
+                font-size: 0.95rem;
+            }
+
+            .submit-btn {
+                padding: 16px 35px;
+                font-size: 1.1rem;
+            }
+
+            .task-item {
+                padding: 16px;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .task-text {
+                text-align: center;
+            }
+
+            .notification {
+                padding: 20px 30px;
+                font-size: 1.1rem;
+                margin: 0 20px;
+                max-width: calc(100vw - 40px);
+            }
+
+            .celebration-text {
+                font-size: 1.6rem;
+            }
+
+            .celebration-subtext {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle" id="themeToggle" onclick="cycleTheme()" title="Change theme">
+            🎨
+        </button>
+
+        <div class="header">
+            <h1 class="app-title">🎯 Daily Tasks</h1>
+            <p class="app-subtitle">Set your 3 goals and crush them!</p>
+        </div>
+
+        <!-- Task Setup Phase -->
+        <div class="task-setup" id="taskSetup">
+            <div class="task-input-group">
+                <input type="text" class="task-input" id="task1" placeholder="💼 What's your first task today?" maxlength="100">
+            </div>
+            <div class="task-input-group">
+                <input type="text" class="task-input" id="task2" placeholder="🎨 What's your second task?" maxlength="100">
+            </div>
+            <div class="task-input-group">
+                <input type="text" class="task-input" id="task3" placeholder="🚀 What's your third task?" maxlength="100">
+            </div>
+            <button class="submit-btn" id="submitBtn" onclick="submitTasks()">
+                Lock in Tasks
+            </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <!-- Task List Phase -->
+        <div class="task-list" id="taskList">
+            <div class="task-item" id="taskItem1">
+                <span class="task-text" id="taskText1"></span>
+                <button class="done-btn" onclick="completeTask(1)">Done</button>
+            </div>
+            <div class="task-item" id="taskItem2">
+                <span class="task-text" id="taskText2"></span>
+                <button class="done-btn" onclick="completeTask(2)">Done</button>
+            </div>
+            <div class="task-item" id="taskItem3">
+                <span class="task-text" id="taskText3"></span>
+                <button class="done-btn" onclick="completeTask(3)">Done</button>
+            </div>
+        </div>
+
+        <!-- Final Celebration -->
+        <div class="final-celebration" id="finalCelebration">
+            <div class="celebration-text">🔥 You did it! Streak saved!</div>
+            <div class="celebration-subtext">All tasks completed! You're on fire! 🎉</div>
+        </div>
+    </div>
+
+    <!-- Notification Popup -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // App State Management
+        const AppState = {
+            tasks: [],
+            completedTasks: 0,
+            totalTasks: 3,
+            currentTheme: 'green'
+        };
+
+        // Theme Management
+        const themes = ['green', 'orange', 'yellow', 'blue'];
+        const themeEmojis = {
+            green: '🌿',
+            orange: '🧡', 
+            yellow: '💛',
+            blue: '💙'
+        };
+
+        function cycleTheme() {
+            const currentIndex = themes.indexOf(AppState.currentTheme);
+            const nextIndex = (currentIndex + 1) % themes.length;
+            const newTheme = themes[nextIndex];
+            
+            setTheme(newTheme);
+        }
+
+        function setTheme(themeName) {
+            // Remove all theme classes
+            document.body.classList.remove(...themes.map(t => `theme-${t}`));
+            
+            // Add new theme class
+            document.body.classList.add(`theme-${themeName}`);
+            
+            // Update app state
+            AppState.currentTheme = themeName;
+            
+            // Update theme button emoji
+            document.getElementById('themeToggle').textContent = themeEmojis[themeName];
+            
+            // Store theme preference (for future backend integration)
+            localStorage.setItem('preferred-theme', themeName);
+        }
+
+        // Initialize theme on page load
+        function initializeTheme() {
+            const savedTheme = localStorage.getItem('preferred-theme') || 'green';
+            setTheme(savedTheme);
+        }
+
+        // Task Management Functions
+        function submitTasks() {
+            const task1 = document.getElementById('task1').value.trim();
+            const task2 = document.getElementById('task2').value.trim();
+            const task3 = document.getElementById('task3').value.trim();
+
+            // Validation
+            if (!task1 || !task2 || !task3) {
+                showNotification('⚠️ Please fill all 3 tasks!', '#ff6b6b');
+                return;
+            }
+
+            // Store tasks in app state
+            AppState.tasks = [task1, task2, task3];
+
+            // Transition to task list view
+            transitionToTaskList();
+
+            // Show progress bar
+            document.getElementById('progressBar').style.display = 'block';
+            updateProgress();
+        }
+
+        function transitionToTaskList() {
+            // Hide task setup
+            const taskSetup = document.getElementById('taskSetup');
+            taskSetup.classList.add('hidden');
+
+            // Show task list
+            const taskList = document.getElementById('taskList');
+            taskList.classList.add('visible');
+
+            // Populate task list
+            for (let i = 0; i < AppState.tasks.length; i++) {
+                document.getElementById(`taskText${i + 1}`).textContent = AppState.tasks[i];
+            }
+
+            // Update header
+            document.querySelector('.app-subtitle').textContent = 'Complete your tasks to save your streak!';
+        }
+
+        function completeTask(taskNumber) {
+            const taskItem = document.getElementById(`taskItem${taskNumber}`);
+            const taskText = document.getElementById(`taskText${taskNumber}`);
+            const doneBtn = taskItem.querySelector('.done-btn');
+
+            // Mark as completed
+            taskItem.classList.add('completed');
+            taskText.classList.add('completed');
+            doneBtn.disabled = true;
+            doneBtn.textContent = '✓ Done';
+
+            // Update state
+            AppState.completedTasks++;
+
+            // Show success notification
+            showNotification(`✅ Task ${taskNumber} complete!`);
+
+            // Update progress
+            updateProgress();
+
+            // Check if all tasks completed
+            if (AppState.completedTasks === AppState.totalTasks) {
+                setTimeout(() => {
+                    showFinalCelebration();
+                }, 1000);
+            }
+
+            // Future backend integration point
+            // This is where you would call your backend API
+            // sendTaskCompletionToBackend(taskNumber, AppState.tasks[taskNumber - 1]);
+        }
+
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const percentage = (AppState.completedTasks / AppState.totalTasks) * 100;
+            progressFill.style.width = percentage + '%';
+        }
+
+        function showNotification(message, backgroundColor = null) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            
+            // Use theme color if no specific color provided
+            if (backgroundColor) {
+                notification.style.backgroundColor = backgroundColor;
+            } else {
+                notification.style.backgroundColor = 'var(--success-color)';
+            }
+            
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2500);
+        }
+
+        function showFinalCelebration() {
+            // Hide task list
+            document.getElementById('taskList').style.display = 'none';
+            document.getElementById('progressBar').style.display = 'none';
+
+            // Show celebration
+            const finalCelebration = document.getElementById('finalCelebration');
+            finalCelebration.classList.add('visible');
+
+            // Update header
+            document.querySelector('.app-title').textContent = '🏆 Mission Complete!';
+            document.querySelector('.app-subtitle').textContent = 'You\'re building great habits!';
+
+            // Future backend integration point
+            // This is where you would send completion data and trigger WhatsApp message
+            // sendCompletionToBackend(AppState.tasks, AppState.completedTasks);
+        }
+
+        // Backend Integration Placeholder Functions
+        // These functions are structured for easy backend integration later
+
+        function sendTaskCompletionToBackend(taskNumber, taskText) {
+            // Future implementation:
+            // - Send POST request to your backend
+            // - Include task completion data
+            // - Handle response for WhatsApp messaging trigger
+            
+            const taskCompletionData = {
+                taskNumber: taskNumber,
+                taskText: taskText,
+                completedAt: new Date().toISOString(),
+                userId: getUserId() // You'll implement user identification
+            };
+
+            console.log('Task completion data ready for backend:', taskCompletionData);
+            
+            // Example fetch call (commented out for now):
+            /*
+            fetch('/api/task-completed', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(taskCompletionData)
+            });
+            */
+        }
+
+        function sendCompletionToBackend(allTasks, completedCount) {
+            // Future implementation:
+            // - Send all completion data
+            // - Trigger WhatsApp success message
+            // - Update user streak data
+
+            const completionData = {
+                tasks: allTasks,
+                completedTasks: completedCount,
+                completedAt: new Date().toISOString(),
+                streakSaved: completedCount === AppState.totalTasks,
+                userId: getUserId()
+            };
+
+            console.log('Full completion data ready for backend:', completionData);
+
+            // Example fetch call (commented out for now):
+            /*
+            fetch('/api/daily-completion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(completionData)
+            });
+            */
+        }
+
+        function getUserId() {
+            // Future implementation: return actual user ID
+            // For now, return a placeholder
+            return 'user_placeholder_id';
+        }
+
+        // Input Enhancement: Enter key support
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.task-input');
+            inputs.forEach((input, index) => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        if (index < inputs.length - 1) {
+                            inputs[index + 1].focus();
+                        } else {
+                            submitTasks();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
